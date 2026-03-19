@@ -15,25 +15,29 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from api.views import ProfileViewSet, ActivityViewSet, TeamViewSet, WorkoutSuggestionViewSet
-import os
 
-codespace_name = os.environ.get('CODESPACE_NAME')
-if codespace_name:
-    base_url = f"https://{codespace_name}-8000.app.github.dev"
-else:
-    base_url = "http://localhost:8000"
+from rest_framework.routers import DefaultRouter
+from .views import UserViewSet, TeamViewSet, ActivityViewSet, WorkoutViewSet, LeaderboardViewSet
+from django.http import JsonResponse
 
 router = DefaultRouter()
-router.register(r'profiles', ProfileViewSet)
-router.register(r'activities', ActivityViewSet)
+router.register(r'users', UserViewSet)
 router.register(r'teams', TeamViewSet)
-router.register(r'suggestions', WorkoutSuggestionViewSet)
+router.register(r'activities', ActivityViewSet)
+router.register(r'workouts', WorkoutViewSet)
+router.register(r'leaderboard', LeaderboardViewSet)
+
+def api_root(request):
+    return JsonResponse({
+        'users': '/api/users/',
+        'teams': '/api/teams/',
+        'activities': '/api/activities/',
+        'workouts': '/api/workouts/',
+        'leaderboard': '/api/leaderboard/',
+    })
 
 urlpatterns = [
+    path('', api_root, name='api-root'),
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
-    path('api/auth/', include('dj_rest_auth.urls')),
-    path('api/auth/registration/', include('dj_rest_auth.registration.urls')),
 ]
