@@ -1,40 +1,24 @@
 from rest_framework import viewsets
-from .models import Profile, Activity, Team, WorkoutSuggestion
-from .serializers import ProfileSerializer, ActivitySerializer, TeamSerializer, WorkoutSuggestionSerializer
-from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.models import User
+from .models import Team, Activity, Workout, Leaderboard
+from .serializers import TeamSerializer, ActivitySerializer, WorkoutSerializer, LeaderboardSerializer, UserSerializer
 
-class ProfileViewSet(viewsets.ModelViewSet):
-    queryset = Profile.objects.all()
-    serializer_class = ProfileSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        return Profile.objects.filter(user=self.request.user)
-
-class ActivityViewSet(viewsets.ModelViewSet):
-    queryset = Activity.objects.all()
-    serializer_class = ActivitySerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        return Activity.objects.filter(user=self.request.user)
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
 class TeamViewSet(viewsets.ModelViewSet):
     queryset = Team.objects.all()
     serializer_class = TeamSerializer
-    permission_classes = [IsAuthenticated]
 
-class WorkoutSuggestionViewSet(viewsets.ModelViewSet):
-    queryset = WorkoutSuggestion.objects.all()
-    serializer_class = WorkoutSuggestionSerializer
-    permission_classes = [IsAuthenticated]
+class ActivityViewSet(viewsets.ModelViewSet):
+    queryset = Activity.objects.all()
+    serializer_class = ActivitySerializer
 
-    def get_queryset(self):
-        return WorkoutSuggestion.objects.filter(user=self.request.user)
+class WorkoutViewSet(viewsets.ModelViewSet):
+    queryset = Workout.objects.all()
+    serializer_class = WorkoutSerializer
 
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+class LeaderboardViewSet(viewsets.ModelViewSet):
+    queryset = Leaderboard.objects.all()
+    serializer_class = LeaderboardSerializer
